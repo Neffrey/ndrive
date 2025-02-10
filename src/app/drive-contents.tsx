@@ -4,6 +4,7 @@ import { SignedIn, SignedOut, SignInButton, UserButton } from "@clerk/nextjs";
 import { ChevronRight } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { UploadButton } from "~/components/uploadthing";
 import type { DB_FileType, DB_FolderType } from "~/server/db/schema";
 import { FileRow, FolderRow } from "./filerow";
 
@@ -12,7 +13,7 @@ export default function GoogleDriveClone(props: {
   folders: DB_FolderType[];
   parents: DB_FolderType[];
 }) {
-  const router = useRouter();
+  const navigate = useRouter();
 
   const handleUpload = () => {
     alert("Upload functionality would be implemented here");
@@ -69,6 +70,13 @@ export default function GoogleDriveClone(props: {
           </ul>
         </div>
       </div>
+      <UploadButton
+        endpoint="imageUploader"
+        className="m-4"
+        onClientUploadComplete={() => {
+          navigate.refresh();
+        }}
+      />
     </div>
   );
 }
