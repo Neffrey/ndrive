@@ -4,9 +4,9 @@ import type { DB_FileType, DB_FolderType } from "~/server/db/schema";
 
 export function FolderRow(props: {
   folder: DB_FolderType;
-  handleFolderClick: () => void;
+  // handleFolderClick: () => void;
 }) {
-  const { folder, handleFolderClick } = props;
+  const { folder } = props;
 
   return (
     <li
@@ -15,13 +15,13 @@ export function FolderRow(props: {
     >
       <div className="grid grid-cols-12 items-center gap-4">
         <div className="col-span-6 flex items-center">
-          <button
-            onClick={() => handleFolderClick()}
+          <Link
+            href={`/f/${folder.id}`}
             className="flex items-center text-gray-100 hover:text-blue-400"
           >
             <FolderIcon className="mr-3" size={20} />
             {folder.name}
-          </button>
+          </Link>
         </div>
       </div>
     </li>
