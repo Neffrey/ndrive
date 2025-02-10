@@ -1,10 +1,10 @@
 "use client"
 
-import { useState } from "react"
-import { File, mockFiles } from "../lib/mock-data"
-import { Folder, FileIcon, Upload, ChevronRight } from "lucide-react"
+import { ChevronRight, FileIcon, Folder, Upload } from "lucide-react"
 import Link from "next/link"
+import { useState } from "react"
 import { Button } from "~/components/ui/button"
+import { mockFiles } from "../lib/mock-data"
 
 export default function GoogleDriveClone() {
   const [currentFolder, setCurrentFolder] = useState<string | null>(null)
@@ -50,7 +50,7 @@ export default function GoogleDriveClone() {
             >
               My Drive
             </Button>
-            {getBreadcrumbs().map((folder, index) => (
+            {getBreadcrumbs().map((folder) => (
               <div key={folder.id} className="flex items-center">
                 <ChevronRight className="mx-2 text-gray-500" size={16} />
                 <Button
