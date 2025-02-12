@@ -31,17 +31,16 @@ export const ourFileRouter = {
     })
     .onUploadComplete(async ({ metadata, file }) => {
       // This code RUNS ON YOUR SERVER after upload
-      console.log("Upload complete for userId:", metadata.userId);
-      console.log("file url", file.url);
+      //   console.log("Upload complete for userId:", metadata.userId);
+      //   console.log("file url", file.url);
 
       await MUTATIONS.createFile({
-        file: {
-          name: file.name,
-          size: file.size,
-          url: file.url,
-          parent: 1,
-        },
-        userId: metadata.userId,
+        name: file.name,
+        size: file.size,
+        url: file.url,
+        parent: 1,
+        fileKey: file.key,
+        // ownerId: metadata.userId,
       });
 
       // !!! Whatever is returned here is sent to the clientside `onClientUploadComplete` callback

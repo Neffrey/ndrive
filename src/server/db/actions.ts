@@ -1,6 +1,8 @@
 import "server-only";
 
-import { eq } from "drizzle-orm";
+import { auth } from "@clerk/nextjs/server";
+import { and, eq } from "drizzle-orm";
+import { z } from "zod";
 import { db } from "~/server/db";
 import { DB_FolderType, files_table, folders_table } from "~/server/db/schema";
 
@@ -23,11 +25,20 @@ export const QUERIES = {
     return parents;
   },
 
-  getFolders: function (folderId: number) {
+  getFolders: async function (folderId: number) {
+    const session = await auth();
+    if (!session?.userId) {
+      throw new Error("Unauthorized");
+    }
     return db
       .select()
       .from(folders_table)
-      .where(eq(folders_table.parent, folderId));
+      .where(
+        and(
+          eq(folders_table.parent, folderId),
+          eq(folders_table.ownerId, session.userId),
+        ),
+      );
   },
 
   getFiles: function (folderId: number) {
@@ -38,16 +49,28 @@ export const QUERIES = {
   },
 };
 
+// INPUT SCHEMAS
+const INPUT_SCHEMAS = {
+  createFile: z.object({
+    name: z.string(),
+    size: z.number(),
+    fileKey: z.string(),
+    url: z.string(),
+    parent: z.number(),
+  }),
+};
+
+// MUTATIONS
 export const MUTATIONS = {
-  createFile: async function (input: {
-    file: {
-      name: string;
-      size: number;
-      url: string;
-      parent: number;
-    };
-    userId: string;
-  }) {
-    return await db.insert(files_table).values(input.file);
+  createFile: async function (input: z.infer<typeof INPUT_SCHEMAS.createFile>) {
+    const session = await auth();
+    if (!session?.userId) {
+      throw new Error("Unauthorized");
+    }
+
+    return await db.insert(files_table).values({
+      ...INPUT_SCHEMAS.createFile.parse(input),
+      ownerId: session.userId,
+    });
   },
 };

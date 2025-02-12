@@ -2,5 +2,12 @@
 
 - [x] setup a database and data model
 - [ ] move folder open state to url
-- [ ] add auth
-- [ ] setup a file uploading
+- [ ] auth on files
+- [ ] file uploading
+- [ ] file deleting
+- [ ] file moving
+- [ ] file renaming
+- [ ] file downloading
+- [ ] file editing
+- [ ] file copying
+- [ ] file cutting
