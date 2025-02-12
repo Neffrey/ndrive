@@ -16,9 +16,7 @@ import {
  *
  * @see https://orm.drizzle.team/docs/goodies#multi-project-schema
  */
-export const createTable = singlestoreTableCreator(
-  (name) => `drive_tutorial_${name}`,
-);
+export const createTable = singlestoreTableCreator((name) => `ndrive_${name}`);
 
 export const files_table = createTable(
   "files_table",
@@ -70,6 +68,9 @@ export const users_table = createTable(
   {
     id: text("id").primaryKey(),
     rootId: bigint("root_id", { mode: "number", unsigned: true }).notNull(),
+    role: text("role", { enum: ["admin", "user", "restricted"] })
+      .notNull()
+      .default("user"),
     createdAt: timestamp("created_at").notNull().defaultNow(),
   },
   (t) => {
