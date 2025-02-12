@@ -1,10 +1,15 @@
 import "server-only";
 
-import { auth } from "@clerk/nextjs/server";
+import { auth, clerkClient } from "@clerk/nextjs/server";
 import { and, eq } from "drizzle-orm";
 import { z } from "zod";
 import { db } from "~/server/db";
-import { DB_FolderType, files_table, folders_table } from "~/server/db/schema";
+import {
+  DB_FolderType,
+  files_table,
+  folders_table,
+  users_table,
+} from "~/server/db/schema";
 
 export const QUERIES = {
   getAllParentsForFolder: async function (folderId: number) {
@@ -58,6 +63,10 @@ const INPUT_SCHEMAS = {
     url: z.string(),
     parent: z.number(),
   }),
+  createFolder: z.object({
+    name: z.string().optional(),
+    parent: z.number().optional(),
+  }),
 };
 
 // MUTATIONS
@@ -73,4 +82,60 @@ export const MUTATIONS = {
       ownerId: session.userId,
     });
   },
+
+  createFolder: async function (
+    input: z.infer<typeof INPUT_SCHEMAS.createFolder>,
+  ) {
+    const session = await auth();
+    if (!session?.userId) {
+      throw new Error("Unauthorized");
+    }
+
+    return await db.insert(folders_table).values({
+      name: "New Folder", // Default name
+      ...INPUT_SCHEMAS.createFolder.parse(input),
+      ownerId: session.userId,
+    });
+  },
+};
+
+// ONBOARDING
+export const completeOnboarding = async () => {
+  const { userId } = await auth();
+
+  if (!userId) {
+    return { message: "No Logged In User" };
+  }
+
+  const localDb = await db
+    .selectDistinct()
+    .from(users_table)
+    .where(eq(users_table.id, userId));
+
+  if (localDb.length === 0) {
+    const rootFolder = await db
+      .insert(folders_table)
+      .values({
+        name: "Root",
+        ownerId: userId,
+      })
+      .$returningId();
+
+    await db.insert(users_table).values({
+      id: userId,
+      rootId: rootFolder[0]!.id,
+    });
+  }
+  const client = await clerkClient();
+
+  try {
+    const res = await client.users.updateUser(userId, {
+      publicMetadata: {
+        onboardingComplete: true,
+      },
+    });
+    return { message: res.publicMetadata };
+  } catch (err) {
+    return { error: "There was an error updating the user metadata." };
+  }
 };

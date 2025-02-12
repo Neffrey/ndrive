@@ -1,5 +1,6 @@
 import "server-only";
 
+import { relations } from "drizzle-orm";
 import {
   bigint,
   index,
@@ -63,3 +64,24 @@ export const folders_table = createTable(
 );
 
 export type DB_FolderType = typeof folders_table.$inferSelect;
+
+export const users_table = createTable(
+  "users_table",
+  {
+    id: text("id").primaryKey(),
+    rootId: bigint("root_id", { mode: "number", unsigned: true }).notNull(),
+    createdAt: timestamp("created_at").notNull().defaultNow(),
+  },
+  (t) => {
+    return [index("userid_index").on(t.id)];
+  },
+);
+
+export const users_relations = relations(users_table, ({ one }) => ({
+  root: one(folders_table, {
+    fields: [users_table.rootId],
+    references: [folders_table.id],
+  }),
+}));
+
+export type DB_UsersType = typeof users_table.$inferSelect;
