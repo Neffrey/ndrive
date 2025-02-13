@@ -1,4 +1,4 @@
-import "server-only";
+// import "server-only";
 
 import { relations } from "drizzle-orm";
 import {
@@ -73,9 +73,9 @@ export const users_table = createTable(
       .default("user"),
     createdAt: timestamp("created_at").notNull().defaultNow(),
   },
-  (t) => {
-    return [index("userid_index").on(t.id)];
-  },
+  // (t) => {
+  //   return [index("userid_index").on(t.id)];
+  // },
 );
 
 export const users_relations = relations(users_table, ({ one }) => ({

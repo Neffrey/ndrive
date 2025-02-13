@@ -26,3 +26,22 @@ const Page = async (props: {
 };
 
 export default Page;
+
+// import Header from "~/components/Header"
+// import Sidebar from "~/components/Sidebar"
+// import FileList from "~/components/FileList"
+
+// export default function Home() {
+//   return (
+//     <div className="flex flex-col h-screen">
+//       <Header />
+//       <div className="flex flex-1 overflow-hidden">
+//         <Sidebar />
+//         <main className="flex-1 overflow-auto p-6">
+//           <h1 className="text-2xl font-semibold mb-4">My Drive</h1>
+//           <FileList />
+//         </main>
+//       </div>
+//     </div>
+//   )
+// }
