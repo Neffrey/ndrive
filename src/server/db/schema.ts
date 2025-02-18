@@ -67,7 +67,7 @@ export const users_table = createTable(
   "users_table",
   {
     id: text("id").primaryKey(),
-    rootId: bigint("root_id", { mode: "number", unsigned: true }).notNull(),
+    rootId: bigint("root_id", { mode: "number", unsigned: true }),
     role: text("role", { enum: ["admin", "user", "restricted"] })
       .notNull()
       .default("user"),

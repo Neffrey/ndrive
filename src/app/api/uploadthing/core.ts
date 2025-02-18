@@ -35,7 +35,7 @@ export const ourFileRouter = {
       //   console.log("Upload complete for userId:", metadata.userId);
       //   console.log("file url", file.url);
 
-      await MUTATIONS.createFile({
+      await MUTATIONS.file.createFile({
         name: file.name,
         size: file.size,
         url: file.url,

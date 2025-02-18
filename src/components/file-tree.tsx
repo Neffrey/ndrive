@@ -1,28 +1,28 @@
-"use client"
+"use client";
 
-import { ChevronDown, ChevronRight, File, Folder } from "lucide-react"
-import { useState } from "react"
-import { cn } from "~/lib/utils"
+import { ChevronDown, ChevronRight, File, Folder } from "lucide-react";
+import { useState } from "react";
+import { cn } from "~/lib/utils";
 
 interface TreeItem {
-  id: string
-  name: string
-  type: string//"file" | "folder"
-  children?: TreeItem[]
-  url?: string
+  id: string;
+  name: string;
+  type: string;
+  children?: TreeItem[];
+  url?: string;
 }
 
 interface FileTreeProps {
-  items: TreeItem[]
-  level?: number
+  items: TreeItem[];
+  level?: number;
 }
 
 export function FileTree({ items, level = 0 }: FileTreeProps) {
-  const [openFolders, setOpenFolders] = useState<Record<string, boolean>>({})
+  const [openFolders, setOpenFolders] = useState<Record<string, boolean>>({});
 
   const toggleFolder = (id: string) => {
-    setOpenFolders((prev) => ({ ...prev, [id]: !prev[id] }))
-  }
+    setOpenFolders((prev) => ({ ...prev, [id]: !prev[id] }));
+  };
 
   return (
     <ul className={cn("space-y-1", level > 0 && "ml-4")}>
@@ -41,14 +41,14 @@ export function FileTree({ items, level = 0 }: FileTreeProps) {
         </li>
       ))}
     </ul>
-  )
+  );
 }
 
 interface FolderItemProps {
-  item: TreeItem
-  isOpen: boolean
-  onToggle: () => void
-  level: number
+  item: TreeItem;
+  isOpen: boolean;
+  onToggle: () => void;
+  level: number;
 }
 
 function FolderItem({ item, isOpen, onToggle, level }: FolderItemProps) {
@@ -56,27 +56,35 @@ function FolderItem({ item, isOpen, onToggle, level }: FolderItemProps) {
     <div>
       <button
         onClick={onToggle}
-        className="flex items-center space-x-2 hover:bg-gray-100 rounded px-2 py-1 w-full text-left"
+        className="flex w-full items-center space-x-2 rounded px-2 py-1 text-left hover:bg-gray-100"
       >
-        {isOpen ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
+        {isOpen ? (
+          <ChevronDown className="h-4 w-4" />
+        ) : (
+          <ChevronRight className="h-4 w-4" />
+        )}
         <Folder className="h-4 w-4" />
         <span>{item.name}</span>
       </button>
-      {isOpen && item.children && <FileTree items={item.children} level={level + 1} />}
+      {isOpen && item.children && (
+        <FileTree items={item.children} level={level + 1} />
+      )}
     </div>
-  )
+  );
 }
 
 interface FileItemProps {
-  item: TreeItem
+  item: TreeItem;
 }
 
 function FileItem({ item }: FileItemProps) {
   return (
-    <a href={item.url} className="flex items-center space-x-2 hover:bg-gray-100 rounded px-2 py-1 ml-6">
+    <a
+      href={item.url}
+      className="ml-6 flex items-center space-x-2 rounded px-2 py-1 hover:bg-gray-100"
+    >
       <File className="h-4 w-4" />
       <span>{item.name}</span>
     </a>
-  )
+  );
 }
-

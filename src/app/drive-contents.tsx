@@ -15,10 +15,6 @@ export default function GoogleDriveClone(props: {
 }) {
   const navigate = useRouter();
 
-  const handleUpload = () => {
-    alert("Upload functionality would be implemented here");
-  };
-
   return (
     <div className="min-h-screen bg-gray-900 p-8 text-gray-100">
       <div className="mx-auto max-w-6xl">
